@@ -1,2 +1,2 @@
-google-genai==1.39.1
+google-generativeai==0.8.5
 streamlit==1.48.1
