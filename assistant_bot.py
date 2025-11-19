@@ -3,7 +3,6 @@ from google.genai import types
 from google.genai.errors import APIError
 
 class assistant_bot:
-
     def __init__(self):
 
         self.api_key = self.read_key()
@@ -22,6 +21,7 @@ class assistant_bot:
             return f.readline().strip("\n")
 
     def create_model(self):
+        
         try:
             genai.configure(api_key=self.api_key)
             self.model = genai.GenerativeModel(
@@ -33,6 +33,7 @@ class assistant_bot:
 
 
     def start_chat(self, history=[]):
+
         try:
             self.chat = self.model.start_chat(
                 history= history
@@ -41,3 +42,13 @@ class assistant_bot:
             print(f"Erro na API ao iniciar o chat: {e}")
         except Exception as e:
             print(f"Ocorreu um erro inesperado: {e}")
+    
+    def initial_diagnosis(self, symptoms):
+       
+        symptoms_list = ""
+        for x in range(0, len(symptoms)):
+            if x == len(symptoms) - 1:
+                symptoms_list += f"{symptoms[x]}."
+            else:
+                symptoms_list += f"{symptoms[x]}, "
+        return f"Estou sentindo os seguintes sintomas: \n{symptoms_list} \n Com base nisso, faça um diagnóstico com a doença mais provável de apresentar esses sintomas, explique para mim de maneira breve qual a ligação dessa doença com os sintomas, causas e como tratar"
