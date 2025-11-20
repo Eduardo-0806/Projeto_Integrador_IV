@@ -12,6 +12,8 @@ st.set_page_config(
 st.title('Sistema De Diagnóstico Inicial 🩺')
 st.caption('Chatbot feito com Gemini')
 
+# --- Definição das Categorias e Sintomas Disponíveis ---
+
 sintomas_categorizados = {
     "Gerais/Sistêmicos": [
         "Febre", 
@@ -82,6 +84,7 @@ sintomas_categorizados = {
     ]
 }
 
+# --- Inicialização (executar APENAS aqui) ---
 if "categoria_idx" not in st.session_state:
     st.session_state.categoria_idx = 0
 
@@ -94,16 +97,19 @@ if "sintomas_escolhidos" not in st.session_state:
 if "diagnostico_inicial" not in st.session_state:
     st.session_state.diagnostico_inicial = False
 
+# --- Callbacks Seguros Para Captura do Índice do Nome da Categoria ---
 def prev_category():
     st.session_state.categoria_idx = (st.session_state.categoria_idx - 1) % len(sintomas_categorizados)
 
 def next_category():
     st.session_state.categoria_idx = (st.session_state.categoria_idx + 1) % len(sintomas_categorizados)
 
+# --- Criação da Aba Lateral Para Seleção de Sintomas ---
 
 with st.sidebar:
     st.title("Lista de Sintomas")
 
+    # --- Colunas Para Setas de Alternar a Página e Nome da Categoria ---
     col_esq, col_nome, col_dir = st.columns([1, 4, 1])
 
     with col_esq:
@@ -113,6 +119,7 @@ with st.sidebar:
 
     categoria_atual = list(sintomas_categorizados.keys())[st.session_state.categoria_idx]
 
+    # --- HTML Para Nome da Categoria ---
     
     with col_nome:
         st.markdown(
@@ -124,6 +131,7 @@ with st.sidebar:
 
     st.write("")
 
+    # --- Checkbox com os Sintomas da Categoria ---
     sintomas_selecionados = st.session_state.sintomas_marcados.get(categoria_atual, [])
     novos_selecionados = []
     for sintoma in sintomas_categorizados[categoria_atual]:
@@ -132,6 +140,7 @@ with st.sidebar:
             novos_selecionados.append(sintoma)
     st.session_state.sintomas_marcados[categoria_atual] = novos_selecionados
 
+    # --- Botão de Enviar Caso Tenha no Mínimo 3 Sintomas Selecionados ---
 
     if st.button("Enviar", key="btn_enviar", use_container_width=True):
         todos = []
@@ -143,11 +152,22 @@ with st.sidebar:
             st.session_state.sintomas_escolhidos = todos
             st.success(f"Sintomas enviados: {', '.join(todos) if todos else 'Nenhum'}")
 
+    # --- Botão de Limpar Conversa Para Outro Diagnóstico Sem Precisar Reiniciar a Página ---
+
+    with st.sidebar:
+        if st.button('Limpar a conversa', type='primary', use_container_width=True):
+            st.session_state.historico = []
+            st.session_state.categoria_idx = 0
+            st.session_state.sintomas_marcados = {cat: [] for cat in sintomas_categorizados.keys()}
+            st.session_state.sintomas_escolhidos = ""
+            st.session_state.diagnostico_inicial = False
+            st.rerun()
 
 
 if 'historico' not in st.session_state:
     st.session_state.historico = []
 
+# --- Criação do Chat Responsável Pelo Diagnóstico ---
 
 bot = assistant_bot()
 bot.create_model()
@@ -161,11 +181,13 @@ for mensagem in bot.chat.history:
     with st.chat_message(role):
         st.markdown(mensagem.parts[0].text)
 
+# --- Somente Permite a Utilização do Chat Caso os Sintomas Já Tenham Sido Selecionados ---
 
 if st.session_state.sintomas_escolhidos:
 
     prompt = st.chat_input('')
 
+    # --- Utiliza A Mensagem de Pedido de Diagnóstico Padrão Para Iniciar a Conversa ---
 
     if (not st.session_state.diagnostico_inicial):
         prompt = bot.initial_diagnosis(st.session_state.sintomas_escolhidos)
@@ -178,6 +200,7 @@ if st.session_state.sintomas_escolhidos:
             mensagem_placeholder = st.empty()
             mensagem_placeholder.markdown('Pensando...')
 
+            # --- Constroi o Texto da Conversa de Forma a Não Ficar Quebrado ---
 
             try:
                 resposta = ''
