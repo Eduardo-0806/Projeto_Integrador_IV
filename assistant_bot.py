@@ -3,6 +3,19 @@ from google.genai import types
 from google.genai.errors import APIError
 
 class assistant_bot:
+    """
+    Classe Responsável Pela Criação de um Bot Assistente de Diagnóstico Baseado em Sintomas Informados. <br>
+    Utiliza da API do Gemini
+
+    :param api_key: A chave de acesso para a Api.
+    :type api_key: str
+    :param model: O modelo de chatbot.
+    :type model: GenerativeModel
+    :param SYSTEM_INSTRUCTION: Instruções para orientar o modelo.
+    :type SYSTEM_INSTRUCTION: str
+    :param chat: O chatbot em si.
+    :type chat: chat  
+    """
     def __init__(self):
 
         self.api_key = self.read_key()
@@ -16,12 +29,23 @@ class assistant_bot:
         self.chat = None
 
     def read_key(self):
+        """
+        Método responsável por ler a chave para acessar a API do Gemini
+
+        :return: A chave da API.
+        :rtype: str
+        """
         path = "api_key"
         with open(path) as f:
             return f.readline().strip("\n")
 
     def create_model(self):
-        
+        """
+        Método responsável por criar o moddelo de chatbot
+
+        :raises Exception: Se a chave da API for inválida.
+        """
+
         try:
             genai.configure(api_key=self.api_key)
             self.model = genai.GenerativeModel(
@@ -33,6 +57,14 @@ class assistant_bot:
 
 
     def start_chat(self, history=[]):
+        """
+        Método responsável por iniciar o chat com um histórico
+
+        :param history: O histórico que será utilizado pelo chat.
+        :type history: list(str)
+        :raises APIError: Se a API apresentar algum erro ao criar o chat.
+        :raises Exception: Se outro erro ocorrer.
+        """
 
         try:
             self.chat = self.model.start_chat(
@@ -44,7 +76,14 @@ class assistant_bot:
             print(f"Ocorreu um erro inesperado: {e}")
     
     def initial_diagnosis(self, symptoms):
-       
+        """
+        Método responsável por contruir a mensagem inicial para solicitação do dianóstico baseado nos sintomas passados
+
+        :param symptoms: A lista de sintomas passadas pelo usuário.
+        :type symptoms: list(str)
+        :return: A mensagem de solicitação de diagnóstico que será passado para o chat.
+        :rtype: str
+        """
         symptoms_list = ""
         for x in range(0, len(symptoms)):
             if x == len(symptoms) - 1:
