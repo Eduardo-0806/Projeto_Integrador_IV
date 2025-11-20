@@ -1,6 +1,5 @@
 # PROJETO INTEGRADOR IV - SISTEMA DE DIAGNÓSTICO INICIAL
 O projeto desenvolvido visa proporcionar uma ferramenta eficaz e de fácil acesso capaz de oferecer diagnósticos precisos e simples, baseados nos sintomas relatados pelo usuário, além de poder sanar outras dúvidas de maneira ilimitada conforme a necessidade do usuário.
-Para construção dos gráficos utilizados para demonstrar visualmente as análises, foi utilizado a linguagem python. Os dados foram retirados do site [Kaggle](https://www.kaggle.com/).
 
 ## VISUALIZANDO O PROJETO
 Para visualizar a página que contém o projeto desenvolvido:
