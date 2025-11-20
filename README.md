@@ -12,6 +12,6 @@ Para ver o vídeo explicativo do projeto:
 ## ORGANIZAÇÃO REPOSITÓRIO
 
 - [api_key](api_key): Arquivo contendo a chave para a API utilizada;
-- [assistente_bot.py](assistente_bot.py): Arquivo contendo o código em Python para criação do chatbot utilizado no sistema;
+- [assistant_bot.py](assistant_bot.py): Arquivo contendo o código em Python para criação do chatbot utilizado no sistema;
 - [main.py](main.py): Arquivo contendo o código em Python para criação da página principal utilizando Streamlit, onde é realizado toda a interação do usuário;
 - [requirements.txt](requirements.txt): Arquivo contendo as bibliotecas utilizadas no projeto.
